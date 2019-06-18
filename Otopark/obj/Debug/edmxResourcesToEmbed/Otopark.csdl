@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="OtoparkModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="CarparkLocation">
+    <Key>
+      <PropertyRef Name="CarparkID" />
+    </Key>
+    <Property Name="CarparkID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CarParkName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="CarParkAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="Places" Relationship="Self.FK_Place_CarparkLocation" FromRole="CarparkLocation" ToRole="Place" />
+  </EntityType>
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="CustomerID" />
+    </Key>
+    <Property Name="CustomerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CustomerTC" Type="String" MaxLength="11" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="CustomerName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="CustomerSurname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="CustomerPhone" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
+    <Property Name="CustomerEMail" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CustomerAddress" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="PersonelID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Vehicles" Relationship="OtoparkModel.FK_Vehicle_Customer" FromRole="Customer" ToRole="Vehicle" />
+    <NavigationProperty Name="Relationships" Relationship="OtoparkModel.FK_Relationship_Customer" FromRole="Customer" ToRole="Relationship" />
+    <Property Name="CustomerBirthYear" Type="Int32" />
+    <NavigationProperty Name="Personel" Relationship="OtoparkModel.FK_Customer_Personel" FromRole="Customer" ToRole="Personel" />
+  </EntityType>
+  <EntityType Name="Place">
+    <Key>
+      <PropertyRef Name="PlaceID" />
+    </Key>
+    <Property Name="PlaceID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PlaceName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="CarparkID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="CarparkLocation" Relationship="Self.FK_Place_CarparkLocation" FromRole="Place" ToRole="CarparkLocation" />
+    <Property Name="EmptyOrFull" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+    <NavigationProperty Name="Relationships" Relationship="OtoparkModel.FK_Relationship_Place" FromRole="Place" ToRole="Relationship" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <Association Name="FK_Place_CarparkLocation">
+    <End Role="CarparkLocation" Type="Self.CarparkLocation" Multiplicity="1" />
+    <End Role="Place" Type="Self.Place" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CarparkLocation">
+        <PropertyRef Name="CarparkID" />
+      </Principal>
+      <Dependent Role="Place">
+        <PropertyRef Name="CarparkID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="OtoparkEntities1" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="CarparkLocations" EntityType="Self.CarparkLocation" />
+    <EntitySet Name="Customers" EntityType="Self.Customer" />
+    <EntitySet Name="Places" EntityType="Self.Place" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <AssociationSet Name="FK_Place_CarparkLocation" Association="Self.FK_Place_CarparkLocation">
+      <End Role="CarparkLocation" EntitySet="CarparkLocations" />
+      <End Role="Place" EntitySet="Places" />
+    </AssociationSet>
+    <FunctionImport Name="sp_alterdiagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="version" Mode="In" Type="Int32" />
+      <Parameter Name="definition" Mode="In" Type="Binary" />
+    </FunctionImport>
+    <FunctionImport Name="sp_creatediagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="version" Mode="In" Type="Int32" />
+      <Parameter Name="definition" Mode="In" Type="Binary" />
+    </FunctionImport>
+    <FunctionImport Name="sp_dropdiagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(OtoparkModel.sp_helpdiagramdefinition_Result)">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(OtoparkModel.sp_helpdiagrams_Result)">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_renamediagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="new_diagramname" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="sp_upgraddiagrams" />
+    <EntitySet Name="Vehicles" EntityType="OtoparkModel.Vehicle" />
+    <AssociationSet Name="FK_Vehicle_Customer" Association="OtoparkModel.FK_Vehicle_Customer">
+      <End Role="Customer" EntitySet="Customers" />
+      <End Role="Vehicle" EntitySet="Vehicles" />
+    </AssociationSet>
+    <EntitySet Name="Relationships" EntityType="OtoparkModel.Relationship" />
+    <AssociationSet Name="FK_Relationship_Customer" Association="OtoparkModel.FK_Relationship_Customer">
+      <End Role="Customer" EntitySet="Customers" />
+      <End Role="Relationship" EntitySet="Relationships" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Relationship_Place" Association="OtoparkModel.FK_Relationship_Place">
+      <End Role="Place" EntitySet="Places" />
+      <End Role="Relationship" EntitySet="Relationships" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Relationship_Vehicle" Association="OtoparkModel.FK_Relationship_Vehicle">
+      <End Role="Vehicle" EntitySet="Vehicles" />
+      <End Role="Relationship" EntitySet="Relationships" />
+    </AssociationSet>
+    <EntitySet Name="Personels" EntityType="OtoparkModel.Personel" />
+    <AssociationSet Name="FK_Customer_Personel" Association="OtoparkModel.FK_Customer_Personel">
+      <End Role="Personel" EntitySet="Personels" />
+      <End Role="Customer" EntitySet="Customers" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Relationship_Personel" Association="OtoparkModel.FK_Relationship_Personel">
+      <End Role="Personel" EntitySet="Personels" />
+      <End Role="Relationship" EntitySet="Relationships" />
+    </AssociationSet>
+  </EntityContainer>
+  <ComplexType Name="sp_helpdiagramdefinition_Result">
+    <Property Type="Int32" Name="version" Nullable="true" />
+    <Property Type="Binary" Name="definition" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="sp_helpdiagrams_Result">
+    <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+    <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+    <Property Type="Int32" Name="ID" Nullable="false" />
+    <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+    <Property Type="Int32" Name="OwnerID" Nullable="false" />
+  </ComplexType>
+  <EntityType Name="Vehicle">
+    <Key>
+      <PropertyRef Name="VehicleID" />
+    </Key>
+    <Property Name="VehicleID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NumberPlate" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Model" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Brand" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Color" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CustomerID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Customer" Relationship="OtoparkModel.FK_Vehicle_Customer" FromRole="Vehicle" ToRole="Customer" />
+    <NavigationProperty Name="Relationships" Relationship="OtoparkModel.FK_Relationship_Vehicle" FromRole="Vehicle" ToRole="Relationship" />
+  </EntityType>
+  <Association Name="FK_Vehicle_Customer">
+    <End Type="OtoparkModel.Customer" Role="Customer" Multiplicity="1" />
+    <End Type="OtoparkModel.Vehicle" Role="Vehicle" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="CustomerID" />
+      </Principal>
+      <Dependent Role="Vehicle">
+        <PropertyRef Name="CustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Relationship">
+    <Key>
+      <PropertyRef Name="RelationshipID" />
+    </Key>
+    <Property Name="RelationshipID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="VehicleID" Type="Int32" Nullable="false" />
+    <Property Name="CustomerID" Type="Int32" Nullable="false" />
+    <Property Name="PersonelID" Type="Int32" Nullable="false" />
+    <Property Name="PlaceID" Type="Int32" Nullable="false" />
+    <Property Name="EntryDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ReleaseDate" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Customer" Relationship="OtoparkModel.FK_Relationship_Customer" FromRole="Relationship" ToRole="Customer" />
+    <NavigationProperty Name="Place" Relationship="OtoparkModel.FK_Relationship_Place" FromRole="Relationship" ToRole="Place" />
+    <NavigationProperty Name="Vehicle" Relationship="OtoparkModel.FK_Relationship_Vehicle" FromRole="Relationship" ToRole="Vehicle" />
+    <Property Name="Price" Type="Int32" />
+    <NavigationProperty Name="Personel" Relationship="OtoparkModel.FK_Relationship_Personel" FromRole="Relationship" ToRole="Personel" />
+  </EntityType>
+  <Association Name="FK_Relationship_Customer">
+    <End Type="OtoparkModel.Customer" Role="Customer" Multiplicity="1" />
+    <End Type="OtoparkModel.Relationship" Role="Relationship" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="CustomerID" />
+      </Principal>
+      <Dependent Role="Relationship">
+        <PropertyRef Name="CustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Relationship_Place">
+    <End Type="OtoparkModel.Place" Role="Place" Multiplicity="1" />
+    <End Type="OtoparkModel.Relationship" Role="Relationship" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Place">
+        <PropertyRef Name="PlaceID" />
+      </Principal>
+      <Dependent Role="Relationship">
+        <PropertyRef Name="PlaceID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Relationship_Vehicle">
+    <End Type="OtoparkModel.Vehicle" Role="Vehicle" Multiplicity="1" />
+    <End Type="OtoparkModel.Relationship" Role="Relationship" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Vehicle">
+        <PropertyRef Name="VehicleID" />
+      </Principal>
+      <Dependent Role="Relationship">
+        <PropertyRef Name="VehicleID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Personel">
+    <Key>
+      <PropertyRef Name="PersonelID" />
+    </Key>
+    <Property Name="PersonelID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PersonelTC" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="true" />
+    <Property Name="PersonelName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="PersonelSurname" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Password" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="PersonelPhone" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
+    <Property Name="PersonelEMail" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="PersonelAddress" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="PersonelBirthYear" Type="Int32" />
+    <NavigationProperty Name="Customers" Relationship="OtoparkModel.FK_Customer_Personel" FromRole="Personel" ToRole="Customer" />
+    <NavigationProperty Name="Relationships" Relationship="OtoparkModel.FK_Relationship_Personel" FromRole="Personel" ToRole="Relationship" />
+  </EntityType>
+  <Association Name="FK_Customer_Personel">
+    <End Type="OtoparkModel.Personel" Role="Personel" Multiplicity="1" />
+    <End Type="OtoparkModel.Customer" Role="Customer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Personel">
+        <PropertyRef Name="PersonelID" />
+      </Principal>
+      <Dependent Role="Customer">
+        <PropertyRef Name="PersonelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Relationship_Personel">
+    <End Type="OtoparkModel.Personel" Role="Personel" Multiplicity="1" />
+    <End Type="OtoparkModel.Relationship" Role="Relationship" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Personel">
+        <PropertyRef Name="PersonelID" />
+      </Principal>
+      <Dependent Role="Relationship">
+        <PropertyRef Name="PersonelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
